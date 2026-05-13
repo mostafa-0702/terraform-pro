@@ -1,0 +1,97 @@
+name: Terraform Prod
+
+on:
+  push:
+    branches: [prod]
+    paths:
+      - 'environments/prod/**'
+      - 'modules/**'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action a effectuer'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
+
+jobs:
+  plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+
+    env:
+      ARM_CLIENT_ID:             ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET:         ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_TENANT_ID:             ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID:       ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      TF_VAR_subscription_id:    ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      TF_VAR_sql_admin_login:    ${{ secrets.TF_VAR_SQL_ADMIN_LOGIN }}
+      TF_VAR_sql_admin_password: ${{ secrets.TF_VAR_SQL_ADMIN_PASSWORD_PROD }}
+      TF_VAR_enable_sql:         "true"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.12.0"
+
+      - name: Terraform Init
+        working-directory: environments/prod
+        run: terraform init
+
+      - name: Terraform Format
+        working-directory: environments/prod
+        run: terraform fmt -check
+
+      - name: Terraform Validate
+        working-directory: environments/prod
+        run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: environments/prod
+        run: terraform plan
+
+  apply:
+    name: Terraform Apply
+    needs: plan
+    runs-on: ubuntu-latest
+    environment: production
+
+    env:
+      ARM_CLIENT_ID:             ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET:         ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_TENANT_ID:             ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID:       ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      TF_VAR_subscription_id:    ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      TF_VAR_sql_admin_login:    ${{ secrets.TF_VAR_SQL_ADMIN_LOGIN }}
+      TF_VAR_sql_admin_password: ${{ secrets.TF_VAR_SQL_ADMIN_PASSWORD_PROD }}
+      TF_VAR_enable_sql:         "true"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.12.0"
+
+      - name: Terraform Init
+        working-directory: environments/prod
+        run: terraform init
+
+      - name: Terraform Apply
+        working-directory: environments/prod
+        if: github.event.inputs.action != 'destroy'
+        run: terraform apply -auto-approve
+
+      - name: Terraform Destroy
+        working-directory: environments/prod
+        if: github.event.inputs.action == 'destroy'
+        run: terraform destroy -auto-approve
