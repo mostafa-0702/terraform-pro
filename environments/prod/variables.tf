@@ -27,3 +27,20 @@ variable "project_name" {
 # test deploy prod protection
 # test deploy prod protection
 # redeploy
+
+variable "sql_admin_login" {
+  description = "SQL Server admin login"
+  type        = string
+}
+
+variable "sql_admin_password" {
+  description = "SQL Server admin password"
+  type        = string
+  sensitive   = true
+}
+
+variable "enable_sql" {
+  description = "Activer le module SQL"
+  type        = bool
+  default     = true
+}
