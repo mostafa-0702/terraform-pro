@@ -17,3 +17,11 @@ output "storage_account_name" {
 output "primary_blob_endpoint" {
   value = module.storage.primary_blob_endpoint
 }
+
+output "app_service_url" {
+  value = module.appservice.app_service_url
+}
+
+output "app_service_name" {
+  value = module.appservice.app_service_name
+}
