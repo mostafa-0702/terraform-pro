@@ -48,7 +48,7 @@ module "appservice" {
   subnet_id           = module.networking.subnet_id
 }
 
-############# MODULE SQL ###############
+############# MODULE SQL ##################
 module "sql" {
   count  = var.enable_sql ? 1 : 0
   source = "../../modules/sql"
