@@ -7,8 +7,8 @@ data "azurerm_resource_group" "security" {
 
 ############# RG ###############
 resource "azurerm_resource_group" "rg" {
-  name     = "rgg-${var.project_name}-${var.environment}"
-  location = data.azurerm_resource_group.security.location
+  name     = "rg-${var.project_name}-${var.environment}"
+  location = var.location
 
   tags = {
     environment = var.environment
@@ -17,43 +17,43 @@ resource "azurerm_resource_group" "rg" {
   }
 }
 
-############# MODULE NETWORKING ###############
+############# MODULE NETWORKING → dans RG existant ###############
 module "networking" {
   source = "../../modules/networking"
 
   location            = data.azurerm_resource_group.security.location
   project_name        = var.project_name
   environment         = var.environment
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = data.azurerm_resource_group.security.name
 }
 
-############# MODULE STORAGE ###############
+############# MODULE STORAGE → dans nouveau RG ###############
 module "storage" {
   source = "../../modules/storage"
 
-  location            = data.azurerm_resource_group.security.location
+  location            = var.location
   project_name        = var.project_name
   environment         = var.environment
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-############# MODULE APPSERVICE ###############
+############# MODULE APPSERVICE → dans nouveau RG ###############
 module "appservice" {
   source = "../../modules/appservice"
 
-  location            = data.azurerm_resource_group.security.location
+  location            = var.location
   project_name        = var.project_name
   environment         = var.environment
   resource_group_name = azurerm_resource_group.rg.name
   subnet_id           = module.networking.subnet_id
 }
 
-############# MODULE SQL ##################
+############# MODULE SQL ###############
 module "sql" {
   count  = var.enable_sql ? 1 : 0
   source = "../../modules/sql"
 
-  location            = data.azurerm_resource_group.security.location
+  location            = var.location
   project_name        = var.project_name
   environment         = var.environment
   resource_group_name = azurerm_resource_group.rg.name
