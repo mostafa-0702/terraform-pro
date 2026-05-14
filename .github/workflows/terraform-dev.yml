@@ -30,7 +30,7 @@ jobs:
       TF_VAR_subscription_id:    ${{ secrets.ARM_SUBSCRIPTION_ID }}
       TF_VAR_sql_admin_login:    ${{ secrets.TF_VAR_SQL_ADMIN_LOGIN }}
       TF_VAR_sql_admin_password: ${{ secrets.TF_VAR_SQL_ADMIN_PASSWORD }}
-      TF_VAR_enable_sql:         "true"
+      TF_VAR_enable_sql:         "false"
 
     steps:
       - name: Checkout

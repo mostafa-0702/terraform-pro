@@ -7,8 +7,8 @@ data "azurerm_resource_group" "security" {
 
 ############# RG ###############
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-${var.project_name}-${var.environment}"
-  location = var.location
+  name     = "rgg-${var.project_name}-${var.environment}"
+  location = data.azurerm_resource_group.security.location
 
   tags = {
     environment = var.environment
@@ -21,7 +21,7 @@ resource "azurerm_resource_group" "rg" {
 module "networking" {
   source = "../../modules/networking"
 
-  location            = var.location
+  location            = data.azurerm_resource_group.security.location
   project_name        = var.project_name
   environment         = var.environment
   resource_group_name = azurerm_resource_group.rg.name
@@ -31,7 +31,7 @@ module "networking" {
 module "storage" {
   source = "../../modules/storage"
 
-  location            = var.location
+  location            = data.azurerm_resource_group.security.location
   project_name        = var.project_name
   environment         = var.environment
   resource_group_name = azurerm_resource_group.rg.name
@@ -41,7 +41,7 @@ module "storage" {
 module "appservice" {
   source = "../../modules/appservice"
 
-  location            = var.location
+  location            = data.azurerm_resource_group.security.location
   project_name        = var.project_name
   environment         = var.environment
   resource_group_name = azurerm_resource_group.rg.name
@@ -53,11 +53,10 @@ module "sql" {
   count  = var.enable_sql ? 1 : 0
   source = "../../modules/sql"
 
-  location            = var.location
+  location            = data.azurerm_resource_group.security.location
   project_name        = var.project_name
   environment         = var.environment
   resource_group_name = azurerm_resource_group.rg.name
   sql_admin_login     = var.sql_admin_login
   sql_admin_password  = var.sql_admin_password
 }
-###mmm
