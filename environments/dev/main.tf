@@ -2,7 +2,7 @@
 data "azurerm_client_config" "current" {}
 
 data "azurerm_resource_group" "security" {
-  name = "rg-security-team"
+  name = "rg-security-teammm"
 }
 
 ############# RG ###############
