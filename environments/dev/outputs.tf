@@ -14,14 +14,14 @@ output "storage_account_name" {
   value = module.storage.storage_account_name
 }
 
-output "primary_blob_endpoint" {
-  value = module.storage.primary_blob_endpoint
-}
-
 output "app_service_url" {
   value = module.appservice.app_service_url
 }
 
-output "app_service_name" {
-  value = module.appservice.app_service_name
+output "security_rg_location" {
+  value = data.azurerm_resource_group.security.location
+}
+
+output "current_tenant_id" {
+  value = data.azurerm_client_config.current.tenant_id
 }
