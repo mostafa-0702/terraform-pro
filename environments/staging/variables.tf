@@ -12,7 +12,7 @@ variable "location" {
 variable "environment" {
   description = "Environnement"
   type        = string
-  default     = "dev"
+  default     = "staging"
 }
 
 variable "project_name" {
@@ -20,7 +20,7 @@ variable "project_name" {
   type        = string
   default     = "myprojectml"
 }
-# test deploy dev
+# test deploy staging
 
 variable "sql_admin_login" {
   description = "SQL Server admin login"
@@ -38,5 +38,4 @@ variable "enable_sql" {
   type        = bool
   default     = false
 }
-# redeploy
-# redeployyy
+# trigger

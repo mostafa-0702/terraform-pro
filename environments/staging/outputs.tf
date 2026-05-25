@@ -14,10 +14,6 @@ output "storage_account_name" {
   value = module.storage.storage_account_name
 }
 
-output "app_service_url" {
-  value = module.appservice.app_service_url
-}
-
-output "current_tenant_id" {
-  value = data.azurerm_client_config.current.tenant_id
+output "primary_blob_endpoint" {
+  value = module.storage.primary_blob_endpoint
 }

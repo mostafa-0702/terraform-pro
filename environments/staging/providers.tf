@@ -11,7 +11,7 @@ terraform {
     resource_group_name  = "rg-terraform-state"
     storage_account_name = "sttfstatenew0702"
     container_name       = "tfstate"
-    key                  = "dev.terraform.tfstate"
+    key                  = "staging.terraform.tfstate"
   }
 }
 
